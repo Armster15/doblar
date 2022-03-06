@@ -10,12 +10,8 @@ The points of this are:
      immediately
 */
 
-// We have to import the polyfill in the service worker because once initalized,
-// the service worker will always run in the background. This means in browsers like
-// Safari, the service worker will load before the polyfill, causing an error. The 
-// downsides to this is now we are loading the polyfill twice and a bigger SW :(
-import "../../public/broadcastchannel-polyfill.js";
-
+// Dummy import that imports nothing to stop TypeScript from complaining
+import type {} from "react";
 declare const self: ServiceWorkerGlobalScope;
 
 const broadcast = new BroadcastChannel("imagemagick-progress");

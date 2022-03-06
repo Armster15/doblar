@@ -18,7 +18,6 @@ const fsPromises = fs.promises;
         'process.env.WORKER_SIZE': workerSize.toString(),
       },
       minify: true,
-      bundle: true,
     }
 
   try {
