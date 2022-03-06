@@ -63,7 +63,7 @@ export const About = () => {
               <br />
               <a
                 className="text-blue-600 focus:underline font-medium"
-                href="https://github.com/Armster15/dummy"
+                href="https://github.com/Armster15/doblar"
                 target="_blank"
               >
                 GitHub Repository
