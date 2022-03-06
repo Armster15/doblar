@@ -16,7 +16,9 @@ declare const self: ServiceWorkerGlobalScope;
 
 const broadcast = new BroadcastChannel("imagemagick-progress");
 const onReadyBroadcast = new BroadcastChannel("imagemagick-onready");
-const loadingMethodBroadcast = new BroadcastChannel("imagemagick-loadingmethod");
+const loadingMethodBroadcast = new BroadcastChannel(
+  "imagemagick-loadingmethod"
+);
 
 /*
 When a service worker is initially registered, the onfetch event won't be 
@@ -24,15 +26,17 @@ triggered until the page is refreshed. The claim() method causes those pages
 to be controlled immediately. 
 */
 self.addEventListener("activate", function (event) {
-  self.skipWaiting() // Kick out the current active worker, if there is one
+  self.skipWaiting(); // Kick out the current active worker, if there is one
 
-  event.waitUntil(self.clients.claim().then(() => {
-    // When claimed, tell the main thread the service worker is ready
-    // so the main thread can fetch ImageMagick. We do so because we 
-    // don't want ImageMagick to be fetched before the service worker
-    // is ready!
-    onReadyBroadcast.postMessage(true);
-  }))
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      // When claimed, tell the main thread the service worker is ready
+      // so the main thread can fetch ImageMagick. We do so because we
+      // don't want ImageMagick to be fetched before the service worker
+      // is ready!
+      onReadyBroadcast.postMessage(true);
+    })
+  );
 });
 
 // https://stackoverflow.com/a/35712094/5721784
@@ -87,19 +91,24 @@ self.addEventListener("fetch", function (event) {
         return fetch(event.request)
           .then((res) => {
             let res2 = res.clone();
-            const contentLength = Number.isNaN(Number(res2.headers.get("content-length")))
-              ? undefined
-              : Number(res.headers.get("content-length"));
-        
-            return consume(
-              res2.body!.getReader(),
-              contentLength
-            ).then(() => {
-              // Cache ImageMagick WASM 
+
+            let contentLength: number | undefined = undefined;
+            if (process.env.NODE_ENV === "production") {
+              contentLength = Number(process.env.WORKER_SIZE!);
+            } else {
+              contentLength = Number.isNaN(
+                Number(res2.headers.get("content-length"))
+              )
+                ? undefined
+                : Number(res.headers.get("content-length"));
+            }
+
+            return consume(res2.body!.getReader(), contentLength).then(() => {
+              // Cache ImageMagick WASM
               // (note Workbox is not caching ImageMagick so we can manually cache it for the progress bar)
-              caches.open("imagemagick").then(cache => {
-                cache.add(event.request)
-              })
+              caches.open("imagemagick").then((cache) => {
+                cache.add(event.request);
+              });
               return res;
             });
           })

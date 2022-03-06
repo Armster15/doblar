@@ -4,11 +4,11 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"npm run watch-sw\" \"vite --host\"",
-    "build": "npm run build-sw && vite build",
-    "serve": "http-server dist",
+    "build": "rimraf ./public/imagemagick_sw.js && vite build && npm run build-sw",
+    "serve": "vite preview",
     "watch-sw": "npx esbuild ./src/imagemagick-worker/sw.ts --outfile=./public/imagemagick_sw.js --watch",
-    "build-sw": "npx esbuild ./src/imagemagick-worker/sw.ts --outfile=./public/imagemagick_sw.js --minify",
-    "clean": "rimraf dist ./src/module-workers-polyfill.js ./public/imagemagick_sw.js"
+    "build-sw": "node buildImageMagickSw.js",
+    "clean": "rimraf dist ./public/imagemagick_sw.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.5.0",
@@ -40,8 +40,9 @@
     "@vitejs/plugin-react": "^1.2.0",
     "autoprefixer": "^10.4.2",
     "esbuild": "^0.14.23",
-    "http-server": "^14.1.0",
+    "fast-glob": "^3.2.11",
     "react-html-props": "^1.0.32",
+    "rimraf": "^3.0.2",
     "tailwindcss": "^3.0.23",
     "tailwindcss-children": "^2.1.0",
     "type-fest": "^2.12.0",
