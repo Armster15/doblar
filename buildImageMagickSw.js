@@ -12,7 +12,6 @@ const fsPromises = fs.promises;
 
   const options = {
       entryPoints: ['./src/imagemagick-worker/sw.ts'],
-      // inject: ["./public/broadcastchannel-polyfill.js"],
       outfile: './public/imagemagick_sw.js',
       define: {
         'process.env.NODE_ENV': '"production"',
