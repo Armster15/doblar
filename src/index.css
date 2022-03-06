@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.focus-ring {
+    @apply focus-visible:ring-4 focus-visible:ring-cyan-400 focus-visible:ring-offset-4 outline-none focus-visible:duration-[0ms];
+}
+
+.toast {
+  @apply rounded shadow-lg bg-slate-100 border-2 border-slate-200;
+}
+
+.scrollbar {
+  scrollbar-width: thin;
+}
+
+.scrollbar::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+}
+
+ 
+/* Handle */
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #CDCDCD;
+}
+
+/* Handle on hover */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #999; 
+}
+
+.scrollbar::-webkit-scrollbar-thumb:active {
+    background: #666; 
+}

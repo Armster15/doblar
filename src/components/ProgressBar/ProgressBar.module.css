@@ -1,0 +1,12 @@
+.indeterminate_progressbar {
+  animation: loading 2s ease-in 0.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(450%);
+  }
+}
