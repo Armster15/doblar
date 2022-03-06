@@ -14,11 +14,21 @@ The points of this are:
 import type {} from "react";
 declare const self: ServiceWorkerGlobalScope;
 
-const broadcast = new BroadcastChannel("imagemagick-progress");
-const onReadyBroadcast = new BroadcastChannel("imagemagick-onready");
-const loadingMethodBroadcast = new BroadcastChannel(
-  "imagemagick-loadingmethod"
-);
+const broadcastMessage = (channel: string, payload: any) => {
+  self.clients.matchAll({
+    includeUncontrolled: true,
+    type: 'window',
+  }).then((clients) => {
+    if (clients && clients.length) {
+      // Send a response - the clients
+      // array is ordered by last focused
+      clients[0].postMessage({
+        channel: channel,
+        payload: payload,
+      });
+    }
+  });
+}
 
 /*
 When a service worker is initially registered, the onfetch event won't be 
@@ -34,7 +44,7 @@ self.addEventListener("activate", function (event) {
       // so the main thread can fetch ImageMagick. We do so because we
       // don't want ImageMagick to be fetched before the service worker
       // is ready!
-      onReadyBroadcast.postMessage(true);
+      broadcastMessage("imagemagick-onready", true);
     })
   );
 });
@@ -55,7 +65,7 @@ function consume(
             return;
           }
           totalDownloaded += value!.byteLength;
-          broadcast.postMessage({
+          broadcastMessage("imagemagick-progress", {
             bytesDownloadedTotal: totalDownloaded,
             bytesJustDownloaded: value?.byteLength,
             percent: contentLength
@@ -79,11 +89,11 @@ self.addEventListener("fetch", function (event) {
     event.respondWith(
       caches.match(event.request).then(function (response) {
         if (response) {
-          loadingMethodBroadcast.postMessage("cache");
+          broadcastMessage("imagemagick-loadingmethod", "cache");
           console.log("Found ImageMagick in cache:", response);
           return response;
         }
-        loadingMethodBroadcast.postMessage("download");
+        broadcastMessage("imagemagick-loadingmethod", "download");
         console.log(
           "ImageMagick not found in cache. About to fetch from network..."
         );

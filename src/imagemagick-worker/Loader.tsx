@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useWorkerStatus, useWorkerRefContext } from "./state";
 import { importWorker } from "./importWorker";
 import { Transition } from '@headlessui/react'
@@ -10,6 +10,19 @@ const imagemagickProgressAtom = atom(0);
 const progressDeterminateAtom = atom(false);
 const displayAtom = atom(true);
 
+function useBroadcast<T = any>(channel: string) {
+  const [broadcastMessage, setBroadcastMessage] = useState<T | undefined>(undefined);
+  useEffect(() => {
+    navigator.serviceWorker.addEventListener("message", (event: MessageEvent<{channel: string; payload: T}>) => {
+      if (event.data && event.data.channel === channel) {
+        setBroadcastMessage(event.data.payload);
+      }
+    })
+  }, [])
+  return broadcastMessage
+}
+
+
 export const Loader: React.FC<{className?: string}> = ({ className }) => {
   const [status, setStatus] = useWorkerStatus();
   const [imagemagickProgress, setImagemagickProgress] = useAtom(imagemagickProgressAtom);
@@ -17,52 +30,28 @@ export const Loader: React.FC<{className?: string}> = ({ className }) => {
   const [display, setDisplay] = useAtom(displayAtom);
   const workerRef = useWorkerRefContext();
 
+  const imagemagickOnReady = useBroadcast<boolean>("imagemagick-onready");
+  const imagemagickLoadingMethod = useBroadcast<"cache" | "download">("imagemagick-loadingmethod");
+  const imagemagickDownloadProgress = useBroadcast<{
+    bytesDownloadedTotal: number;
+    bytesJustDownloaded: number;
+    percent?: number;
+  }>("imagemagick-progress");
+
+  const loadWorker = async () => {
+    let _worker = await importWorker();
+    workerRef!.current = _worker
+    setImagemagickProgress(100);
+    setProgressDeterminate(true);
+    setStatus("complete");
+
+    // Hide Loader in 3 seconds
+    setTimeout(() => {
+      setDisplay(false)
+    }, 3000)
+  }
+
   useEffect(() => {
-    const loadWorker = async () => {
-      let _worker = await importWorker();
-      workerRef!.current = _worker
-      setImagemagickProgress(100);
-      setProgressDeterminate(true);
-      setStatus("complete");
-
-      // Hide Loader in 3 seconds
-      setTimeout(() => {
-        setDisplay(false)
-      }, 3000)
-    }
-    const broadcast = new BroadcastChannel("imagemagick-progress");
-    const onReadyBroadcast = new BroadcastChannel("imagemagick-onready");
-    const loadingMethodBroadcast = new BroadcastChannel("imagemagick-loadingmethod");
-
-    broadcast.onmessage = (
-      event: MessageEvent<{
-        bytesDownloadedTotal: number;
-        bytesJustDownloaded: number;
-        percent?: number;
-      }>
-    ) => {
-      // 90% of the progress bar is for the download. Remaining 10% is for parsing/loading
-      let _progress = (event.data.percent ?? Infinity) * 0.9;
-
-      // Somewhat of a hack, maybe use better method in the future
-      // If the build has finished downloading, set status to "parsing"
-      if(_progress === 90) {
-        setStatus("parsing")
-      }
-
-      setImagemagickProgress((event.data.percent ?? Infinity) * 0.9);
-    };
-
-    loadingMethodBroadcast.onmessage = (event: MessageEvent<"cache" | "download">) => {
-      if(event.data == "download") {
-        setProgressDeterminate(true)
-        setImagemagickProgress(0)
-        setStatus("downloading")
-      }
-      else if(event.data == "cache") setStatus("fetching-from-cache")
-      else throw Error("invalid value")
-    }
-
     // If Component got re rendered, don't do anything
     if (status !== "not-started") {
       return
@@ -76,11 +65,37 @@ export const Loader: React.FC<{className?: string}> = ({ className }) => {
     else if(navigator.serviceWorker.controller !== null) {
       loadWorker()
     }
-    // Else wait for the worker to load and tell us it is ready
-    else {
-      onReadyBroadcast.onmessage = async () => loadWorker()
-    }
   }, []);
+
+  // When the service worker gets activated (if it is not already), load the worker
+  useEffect(() => {
+    if(imagemagickOnReady) loadWorker()
+  }, [imagemagickOnReady])
+
+  // On `imagemagickLoadingMethod` change
+  useEffect(() => {
+    if(imagemagickLoadingMethod == "download") {
+      setProgressDeterminate(true)
+      setStatus("downloading")
+    }
+    else if(imagemagickLoadingMethod == "cache") setStatus("fetching-from-cache")
+  }, [imagemagickLoadingMethod])
+
+  // On `imagemagickDownloadProgress` change
+  useEffect(() => {
+    if(!imagemagickDownloadProgress) return;
+
+    // 90% of the progress bar is for the download. Remaining 10% is for parsing/loading
+    let _progress = (imagemagickDownloadProgress.percent ?? Infinity) * 0.9;
+
+    // Somewhat of a hack, maybe use better method in the future
+    // If the build has finished downloading, set status to "parsing"
+    if(_progress === 90) {
+      setStatus("parsing")
+    }
+
+    setImagemagickProgress(_progress);
+  }, [imagemagickDownloadProgress])
 
   return (
     <Transition 
