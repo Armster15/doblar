@@ -1,6 +1,7 @@
 {
   "name": "doblar",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "start": "concurrently \"npm run watch-sw\" \"vite --host\"",
     "build": "npm run build-sw && vite build",
