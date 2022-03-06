@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"npm run watch-sw\" \"vite --host\"",
-    "build": "rimraf ./public/imagemagick_sw.js && vite build && npm run build-sw",
-    "serve": "vite preview",
+    "build": "npm run clean && vite build && npm run build-sw",
+    "serve": "vite preview --host",
     "watch-sw": "npx esbuild ./src/imagemagick-worker/sw.ts --outfile=./public/imagemagick_sw.js --watch",
     "build-sw": "node buildImageMagickSw.js",
     "clean": "rimraf dist ./public/imagemagick_sw.js"
