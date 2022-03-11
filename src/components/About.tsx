@@ -62,7 +62,7 @@ export const About = () => {
               <br />
               <br />
               <a
-                className="text-blue-600 focus:underline font-medium"
+                className="link"
                 href="https://github.com/Armster15/doblar"
                 target="_blank"
               >

@@ -10,6 +10,10 @@
   @apply rounded shadow-lg bg-slate-100 border-2 border-slate-200;
 }
 
+.link {
+  @apply text-blue-600 focus:underline font-medium;
+}
+
 .scrollbar {
   scrollbar-width: thin;
 }
