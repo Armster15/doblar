@@ -18,14 +18,16 @@ function useBroadcast<T = any>(channel: string) {
     undefined
   );
   useEffect(() => {
-    navigator.serviceWorker.addEventListener(
-      "message",
-      (event: MessageEvent<{ channel: string; payload: T }>) => {
-        if (event.data && event.data.channel === channel) {
-          setBroadcastMessage(event.data.payload);
+    if (("serviceWorker" in navigator)) {
+      navigator.serviceWorker.addEventListener(
+        "message",
+        (event: MessageEvent<{ channel: string; payload: T }>) => {
+          if (event.data && event.data.channel === channel) {
+            setBroadcastMessage(event.data.payload);
+          }
         }
-      }
-    );
+      );
+    }
   }, []);
   return broadcastMessage;
 }
@@ -45,12 +47,14 @@ export const Consent: React.FC = () => {
 
   useEffect(() => {
     (async() => {
-      const result = await isImageMagickInCache();
-
       // If ImageMagick is in cache that means the user already
       // consented to downloading so just retrieve ImageMagick
       // from cache
-      if(result) setConsent(true);
+      if (("serviceWorker" in navigator)) {
+        const result = await isImageMagickInCache();
+        if(result) setConsent(true);
+        else setConsent("not-decided");
+      }
       else setConsent("not-decided")
     })()
   }, [])
