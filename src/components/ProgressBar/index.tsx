@@ -37,9 +37,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <div
           className={cn(
             "h-2.5 rounded-full",
-            value! >= 100 ? "bg-green-600" : "bg-blue-600",
+            value! >= maxValue ? "bg-green-600" : "bg-blue-600",
           )}
-          style={{width: `${value}%`}}
+          style={{width: `${(value!/maxValue) * 100}%`}}
         />
       )}
 
