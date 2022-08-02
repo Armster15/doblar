@@ -1,5 +1,5 @@
 /*
-This is a service worker that intercepts the import of `imagemagick-wasm-builds`.
+This is a service worker that intercepts the import of ImageMagick.
 The points of this are:
   1) We need to intercept the fetch request to track the progress of the download
      of the WASM build. Dynamic imports (from what I could find) do not have a method
@@ -84,8 +84,9 @@ self.addEventListener("fetch", function (event) {
   // console.log(event.request.url)
   if (
     /\/assets\/worker.*.js$/.test(event.request.url) || // Production Regex
-    /\/node_modules\/.vite\/imagemagick-wasm-builds.js/.test(event.request.url) // Development Regex
-  ) {
+    /\/node_modules\/.vite\/imagemagick-wasm-builds.js/.test(event.request.url) || // Development Regex (imagemagick-wasm-builds)
+    /\/node_modules\/.vite\/@imagemagick_magick-wasm.js/.test(event.request.url) // Development Regex (@dlemstra/magick-wasm)
+    ) {
     event.respondWith(
       caches.match(event.request).then(function (response) {
         if (response) {

@@ -98,10 +98,6 @@ export const LearnMoreModal: React.FC<{
                           can be viewed here and the builds uses can be viewed{" "}
                           <A href="https://github.com/dlemstra/magick-wasm">
                             here
-                          </A>{" "}
-                          and the built WASM bundles can be viewed{" "}
-                          <A href="https://github.com/Armster15/imagemagick-wasm-builds">
-                            here
                           </A>
                           .
                         </p>

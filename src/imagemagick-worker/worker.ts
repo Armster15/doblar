@@ -1,6 +1,6 @@
 import { expose } from "comlink";
 import { bytesToBase64 } from "byte-base64";
-import { ImageMagick, initializeImageMagick } from "imagemagick-wasm-builds";
+import { ImageMagick, initializeImageMagick } from "@imagemagick/magick-wasm";
 import { ImageFileTypes } from "$/constants";
 
 interface ConvertFile {
