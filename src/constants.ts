@@ -1,4 +1,4 @@
-export const imageFileTypes = ["JPG", "PNG", "GIF", "WEBP", "TIFF"] as const;
+export const imageFileTypes = ["JPG", "PNG", "GIF", "WEBP"] as const;
 export type ImageFileTypes = typeof imageFileTypes[number];
 
 export type FileStatus = {
