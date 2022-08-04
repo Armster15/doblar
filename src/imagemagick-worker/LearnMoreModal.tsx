@@ -111,7 +111,7 @@ export const LearnMoreModal: React.FC<{
                             here
                           </A>
                           . The specific libheif build used can be viewed{" "}
-                          <A href="https://github.com/Armster15/heic-decode">
+                          <A href="https://gitlab.com/Armster15/heic-decode">
                             here
                           </A>
                           .
