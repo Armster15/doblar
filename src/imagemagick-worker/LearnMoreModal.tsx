@@ -106,7 +106,7 @@ export const LearnMoreModal: React.FC<{
                           <A href="https://github.com/strukturag/libheif">
                             libheif
                           </A>, 
-                          used for converting HEIC images. Libheif has an Emscripten build available{" "}
+                          which is used for converting HEIC images. Libheif has an Emscripten build available{" "}
                           <A href="https://github.com/catdad-experiments/libheif-js">
                             here
                           </A>
