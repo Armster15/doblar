@@ -73,7 +73,7 @@ export const Consent: React.FC = () => {
   else return (
     <>
       <div className="toast p-3">
-        <p>Can we download ImageMagick (18MB)?</p>
+        <p>Can we download ImageMagick (20MB)?</p>
         <div className="grid grid-cols-3 gap-3 mt-1">
           <button
             onClick={() => setConsent(true)}

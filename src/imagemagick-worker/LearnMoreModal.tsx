@@ -66,7 +66,7 @@ export const LearnMoreModal: React.FC<{
                   To actually convert files locally, we use this awesome piece
                   of software called ImageMagick.
                 </p>
-                <p>ImageMagick is pretty big, and stands at a whopping 18MB.</p>
+                <p>ImageMagick is pretty big, and stands at a whopping 20MB.</p>
                 <p>
                   Please note that to convert files, downloading ImageMagick is
                   required.
@@ -97,6 +97,21 @@ export const LearnMoreModal: React.FC<{
                           The original source of the ImageMagick WASM library
                           can be viewed here and the builds uses can be viewed{" "}
                           <A href="https://github.com/dlemstra/magick-wasm">
+                            here
+                          </A>
+                          .
+                        </p>
+                        <p>
+                          We also use{" "}
+                          <A href="https://github.com/strukturag/libheif">
+                            libheif
+                          </A>, 
+                          used for converting HEIC images. Libheif has an Emscripten build available{" "}
+                          <A href="https://github.com/catdad-experiments/libheif-js">
+                            here
+                          </A>
+                          . The specific libheif build used can be viewed{" "}
+                          <A href="https://github.com/Armster15/heic-decode">
                             here
                           </A>
                           .
