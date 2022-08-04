@@ -1,6 +1,11 @@
 import { expose } from "comlink";
 import { bytesToBase64 } from "byte-base64";
+import getFileType from 'magic-bytes.js';
 import { ImageMagick, initializeImageMagick } from "@imagemagick/magick-wasm";
+import { MagickImage } from "@imagemagick/magick-wasm/magick-image";
+import { MagickFormat } from "@imagemagick/magick-wasm/magick-format";
+import { MagickReadSettings } from '@imagemagick/magick-wasm/settings/magick-read-settings';
+import heicDecode from "heic-decode-builds";
 import { ImageFileTypes } from "$/constants";
 
 interface ConvertFile {
@@ -16,29 +21,58 @@ export const init = async () => {
 export const convertFile = async (data: ConvertFile) => {
   await initializeImageMagick();
 
-  // This monstrosity of promises is for promisifying two functions:
-  // One is the ImageMagick.read function, where modifications are applied,
-  // and the other being the one where we get the Uint8Array data
-  return await new Promise<string>((fulfilled) => {
-    ImageMagick.read(data.content, async (image) => {
-      // If we are converting to JPG, turn off alpha channel We are doing this
-      // explictely because for some reason, ImageMagick corrupts the background
-      if (data.convertTo.toLowerCase() === "jpg") {
-        // image.alpha(AlphaOption.Remove);
-      }
+  const originalFileType = getFileType(data.content);
 
-      const newData = await new Promise<Uint8Array>((fulfilled) => {
-        // @ts-ignore
-        image.write((newData) => fulfilled(newData), data.convertTo);
-      });
-      
-      // We cannot return a Uint8Array from a web worker
-      // so we convert the data to a Base64 string and then on 
-      // the main thread, we convert it back for downloading
-      const stringData = bytesToBase64(newData)
-      fulfilled(stringData);
+  // If file is HEIC, first process the file through `heic-decode`
+  // and then let ImageMagick take care of the rest
+  if(originalFileType.map(e => e.mime).includes("image/heif")) {
+    const heif = await heicDecode({ buffer: data.content });
+    const heifData = new Uint8Array(heif.data);
+
+    const settings = new MagickReadSettings({
+      width: heif.width,
+      height: heif.height,
+      format: MagickFormat.Rgba
+    })
+
+    let image = MagickImage.create();
+    image.depth = 8
+    image.read(heifData, settings);
+    
+    const convertedImage = await new Promise<Uint8Array>((fulfilled) => {
+      // @ts-ignore
+      image.write((newData) => fulfilled(newData), data.convertTo);
     });
-  });
+
+    const stringData = bytesToBase64(convertedImage);
+    return stringData;
+  }
+
+  else {
+    // This monstrosity of promises is for promisifying two functions:
+    // One is the ImageMagick.read function, where modifications are applied,
+    // and the other being the one where we get the Uint8Array data
+    return await new Promise<string>((fulfilled) => {
+      ImageMagick.read(data.content, async (image) => {
+        // If we are converting to JPG, turn off alpha channel We are doing this
+        // explictely because for some reason, ImageMagick corrupts the background
+        if (data.convertTo.toLowerCase() === "jpg") {
+          // image.alpha(AlphaOption.Remove);
+        }
+
+        const newData = await new Promise<Uint8Array>((fulfilled) => {
+          // @ts-ignore
+          image.write((newData) => fulfilled(newData), data.convertTo);
+        });
+        
+        // We cannot return a Uint8Array from a web worker
+        // so we convert the data to a Base64 string and then on 
+        // the main thread, we convert it back for downloading
+        const stringData = bytesToBase64(newData)
+        fulfilled(stringData);
+      });
+    });
+  }
 };
 
 const worker = {
