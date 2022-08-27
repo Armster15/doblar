@@ -59,7 +59,7 @@ export const LearnMoreModal: React.FC<{
                 as="h3"
                 className="text-2xl mb-4 font-semibold leading-6 text-gray-900"
               >
-                What are we downloading?
+                What are we fetching?
               </Dialog.Title>
               <div className="children:text-gray-500 space-y-3">
                 <p>
@@ -68,7 +68,7 @@ export const LearnMoreModal: React.FC<{
                 </p>
                 <p>ImageMagick is pretty big, and stands at a whopping 20MB.</p>
                 <p>
-                  Please note that to convert files, downloading ImageMagick is
+                  Please note that to convert files, fetching ImageMagick is
                   required.
                 </p>
 

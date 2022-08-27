@@ -64,7 +64,7 @@ export const Consent: React.FC = () => {
 
   else if (consent === false) return (
     <div className="toast p-3 space-y-1">
-      <p>ImageMagick will not be downloaded.</p>
+      <p>ImageMagick will not be fetched.</p>
       <p>However ImageMagick is required for this application to work.</p>
       <p>If you change your mind, refresh the page.</p>
     </div>
@@ -194,7 +194,7 @@ export const Progress: React.FC = () => {
         <div className="flex justify-between text-base mb-2 space-x-4">
           <p>
             {
-              (status === "downloading" && "Downloading ImageMagick...") ||
+              (status === "downloading" && "Fetching ImageMagick...") ||
               (status === "fetching-from-cache" &&
                 "Fetching ImageMagick from cache") ||
               (status === "parsing" && "Parsing") ||

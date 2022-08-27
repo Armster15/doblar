@@ -46,8 +46,8 @@ export const About = () => {
               If you aren't connected to the Internet, you can still use Doblar!
               Try it out yourself: turn off your WiFi, refresh the page and try
               converting an image! The only catch is you need to make sure
-              ImageMagick has been fully downloaded before you go offline, but
-              once it's downloaded, Doblar works offline!
+              ImageMagick has been fully fetched before you go offline, but
+              once it's fetched, Doblar works offline!
             </>
           }
         />
