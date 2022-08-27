@@ -30,7 +30,8 @@ export const App = () => {
     <WorkerRefContext.Provider value={workerRef}>
       <div className="bg-gray-200 min-h-screen px-6 py-7 pb-16 space-y-6">
         <header>
-          <img className="w-44 mb-7" src={logo} />
+          <h1 className="sr-only">doblar</h1>
+          <img className="w-44 mb-7" src={logo} alt="doblar" aria-hidden={true} />
         </header>
 
         <Portal>

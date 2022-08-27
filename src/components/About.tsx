@@ -15,12 +15,12 @@ export const About = () => {
     
   return (
     <TopLevelComponent>
-      <p>
+      <h2 className="font-bold text-2xl">Why Doblar?</h2>
+      <p className="my-5">
         Doblar is not an ordinary image converter. All the conversion happens
         right in your browser. In other words, nothing is uploaded to a server,
         it is purely local!
       </p>
-      <h3 className="font-bold text-2xl my-5">Why Doblar?</h3>
 
       <div className={isTablet ? "grid grid-cols-3 gap-6" : "space-y-10"}>
         <Card

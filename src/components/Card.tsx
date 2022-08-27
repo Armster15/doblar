@@ -16,7 +16,7 @@ export const Card: React.FC<CardProps> = ({ title, icon, tag, description }) => 
       {/* Title and Tag */}
       <span className="font-bold text-xl text-gray-800 my-2">
         <span className="flex justify-center items-center space-x-2">
-          <h4>{title}</h4>
+          <h3>{title}</h3>
           {tag && 
             <span className="uppercase bg-gray-700 text-white rounded px-2 py-1 text-xs leading-none">
               {tag}
