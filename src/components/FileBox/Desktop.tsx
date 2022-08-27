@@ -12,7 +12,7 @@ export const Desktop = () => {
         <h2 className="font-bold text-3xl pb-5 px-5 ">Files</h2>
       </div>
       {filesToConvertAtoms.length === 0 ? (
-        <p className="px-5 py-5">No files... yet</p>
+        <p className="px-5 py-5 text-gray-700">No files... yet</p>
       ) : (
         <div className="flex flex-col-reverse"> {/* Render the list in a reverse order with CSS instead of JS :) */}
           {filesToConvertAtoms.map((fileAtom) => {   

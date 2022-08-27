@@ -25,7 +25,7 @@ export const Card: React.FC<CardProps> = ({ title, icon, tag, description }) => 
         </span>
       </span>
 
-      <p className="px-4 text-gray-600">{description}</p>
+      <p className="px-4 text-gray-700">{description}</p>
     </div>
   );
 };

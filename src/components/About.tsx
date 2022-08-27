@@ -16,7 +16,7 @@ export const About = () => {
   return (
     <TopLevelComponent>
       <h2 className="font-bold text-2xl">Why Doblar?</h2>
-      <p className="my-5">
+      <p className="text-gray-700 my-5">
         Doblar is not an ordinary image converter. All the conversion happens
         right in your browser. In other words, nothing is uploaded to a server,
         it is purely local!

@@ -12,7 +12,7 @@ export const Mobile = () => {
     <div className="bg-white min-h-full rounded">
       <MobileBox title="Files" panelPadding={filesToConvertAtoms.length === 0}>
         {filesToConvertAtoms.length === 0 ? (
-          <p>No files... yet</p>
+          <p className="text-gray-700">No files... yet</p>
         ) : (
           <div className="flex flex-col-reverse">
             {filesToConvertAtoms.map((fileAtom) => {
